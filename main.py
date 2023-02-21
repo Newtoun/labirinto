@@ -1,7 +1,7 @@
 from Estado import Estado
 from Gabarito import Gabarito
 from labirinto import labirinto
-import teste
+
 
 matriz = labirinto(11,9)
 inicio = matriz.ponto_Inicial
