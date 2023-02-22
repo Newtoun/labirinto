@@ -1,154 +1,155 @@
-from labirinto import labirinto
+from LabirintoAutomatico import labirintoAutomatico
 from Estado import Estado
 from Gabarito import Gabarito
 import pygame
 
-pygame.init()
-
-screen = pygame.display.set_mode((57*25,27*25))
-pygame.display.set_caption("Labirinto")
 
 speed = 25
+class interface:
+    def __init__(self,matriz):
+        self.altura = matriz.altura
+        self.largura = matriz.largura
+        self.matriz = matriz.matriz
+        self.ponto_Inicial = matriz.ponto_Inicial
+        self.ponto_Final = matriz.ponto_Final
+        self.x = matriz.ponto_Inicial.x*25
+        self.y = matriz.ponto_Inicial.y*25
+        pygame.init()
+        self.screen = pygame.display.set_mode((self.largura*25,self.altura*25))
+        pygame.display.set_caption("Labirinto")
 
-matriz = labirinto(57,27)
-x = matriz.ponto_Inicial.x*25
-y = matriz.ponto_Inicial.y*25
-map = matriz.matriz
+    def game_map(self):
 
+        #caminho
+        global rect_one
+        surface = pygame.Surface((100, 100), pygame.SRCALPHA)
+        rect_one = pygame.draw.rect(surface, (0, 80, 75), (0, 0, 25, 25)) 
+        #parede
+        global rect_two
+        surface_one = pygame.Surface((80, 80), pygame.SRCALPHA)
+        rect_two = pygame.draw.rect(surface_one, (0, 255, 255), (0, 0, 25, 25))
+        #tracante
+        global rect_three
+        surface_two = pygame.Surface((80, 80), pygame.SRCALPHA)
+        rect_three = pygame.draw.rect(surface_two, (255, 153, 51), (0, 0, 25, 25)) 
 
-def game_map():
-
-    #caminho
-    global rect_one
-    surface = pygame.Surface((100, 100), pygame.SRCALPHA)
-    rect_one = pygame.draw.rect(surface, (0, 80, 75), (0, 0, 25, 25)) 
-    #parede
-    global rect_two
-    surface_one = pygame.Surface((80, 80), pygame.SRCALPHA)
-    rect_two = pygame.draw.rect(surface_one, (0, 255, 255), (0, 0, 25, 25))
-    #tracante
-    global rect_three
-    surface_two = pygame.Surface((80, 80), pygame.SRCALPHA)
-    rect_three = pygame.draw.rect(surface_two, (255, 153, 51), (0, 0, 25, 25)) 
-
-    tileX = 0
-    tileY = 0
-    
-    for y, row in enumerate(map):
         tileX = 0
-        for x, cell in enumerate(row):
-            if cell == 0:
-                image = surface_one
-            elif cell == 1:
-                image = surface
-            else:
-                image = surface_two
-            screen.blit(image, [x*25, y*25]) 
-    pygame.display.update() 
-
-
-def player():
-    player = pygame.draw.rect(screen, (255,0,0), (x, y, 25, 25))   
-
-def manuel(resposta):
-    global x, y
-    loop = True
-    i = 0
-    while loop:
-        pygame.time.delay(100)
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                loop = False
+        tileY = 0
         
-        row = y // 25
-        column = x // 25
-        
-        if map[row][column] == 1:
-            map[row][column] = 2
-        pos = x, y
+        for y, row in enumerate(self.matriz):
+            tileX = 0
+            for x, cell in enumerate(row):
+                if cell == 0:
+                    image = surface_one
+                elif cell == 1:
+                    image = surface
+                else:
+                    image = surface_two
+                self.screen.blit(image, [x*25, y*25]) 
+        pygame.display.update() 
 
-        if resposta[i]=='left':
-            x -= speed
-        if resposta[i]=='right':
-            x += speed
-        if resposta[i]=='up':
-            y -= speed
-        if resposta[i]=='down':
-            y += speed
 
-        pygame.time.delay(300)
-        i+=1
-        row = y // 25
-        column = x // 25
-        if map[row][column] == 0:
-            x, y = pos
+    def player(self):
+        player = pygame.draw.rect(self.screen, (255,0,0), (self.x, self.y, 25, 25))   
 
-        screen.fill((255,255,255))
-        game_map()
-        player()
-        pygame.display.update()
-        
-        if row == matriz.ponto_Final.y and column == matriz.ponto_Final.x:
-            loop = False
+    def automatico(self,resposta): ####mudar
+        loop = True
+        i = 0
+        while loop:
+            pygame.time.delay(100)
 
-    pygame.quit()
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    loop = False
+            
+            row = self.y // 25
+            column = self.x // 25
+            
+            if self.matriz[row][column] == 1:
+                self.matriz[row][column] = 2
+            pos = self.x, self.y
 
-def automatic():
-    global x, y
-    loop = True
-    while loop:
-        pygame.time.delay(100)
+            if resposta[i]=='left':
+                self.x -= speed
+            if resposta[i]=='right':
+                self.x += speed
+            if resposta[i]=='up':
+                self.y -= speed
+            if resposta[i]=='down':
+                self.y += speed
 
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
+            pygame.time.delay(300)
+            i+=1
+            row = self.y // 25
+            column = self.x // 25
+            if self.matriz[row][column] == 0:
+                self.x, self.y = pos
+
+            self.screen.fill((255,255,255))
+            interface.game_map(self)
+            interface.player(self)
+            pygame.display.update()
+            
+            if row == self.ponto_Final.y and column == self.ponto_Final.x:
                 loop = False
 
-        #player controls
-        keys = pygame.key.get_pressed()
-        
-        pos = x, y
+        pygame.quit()
 
-        row = y // 25
-        column = x // 25
-        if map[row][column] == 1:
-            map[row][column] = 2
+    def manual(self):
+        loop = True
+        while loop:
+            pygame.time.delay(100)
 
-        if keys[pygame.K_LEFT]:
-            x -= speed
-        if keys[pygame.K_RIGHT]:
-            x += speed
-        if keys[pygame.K_UP]:
-            y -= speed
-        if keys[pygame.K_DOWN]:
-            y += speed
-        
-        row = y // 25
-        column = x // 25
-        if map[row][column] == 0:
-            x, y = pos
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    loop = False
 
-        screen.fill((255,255,255))
-        game_map()
-        player()
-        pygame.display.update()
+            #player controls
+            keys = pygame.key.get_pressed()
+            
+            pos = self.x, self.y
 
-        if row == matriz.ponto_Final.y and column == matriz.ponto_Final.x:
-            loop = False
+            row = self.y // 25
+            column = self.x // 25
+            if self.matriz[row][column] == 1:
+                self.matriz[row][column] = 2
 
-    pygame.quit()
+            if keys[pygame.K_LEFT]:
+                self.x -= speed
+            if keys[pygame.K_RIGHT]:
+                self.x += speed
+            if keys[pygame.K_UP]:
+                self.y -= speed
+            if keys[pygame.K_DOWN]:
+                self.y += speed
+            
+            row = self.y // 25
+            column = self.x // 25
+            if self.matriz[row][column] == 0:
+                self.x, self.y = pos
 
-def to_execute():
-    estadoInicial = Estado(matriz.matriz,matriz.ponto_Inicial,matriz.ponto_Final,0, [])
-    resposta = Gabarito.busca_Informada(estadoInicial)
-    print("ESCOLHA:")
-    print("DIGITE 1 PARA MANUAL")
-    print("DIGITE 2 PARA AUTOMATICO")
-    escolha = int(input())
-    if(escolha == 1):
-        manuel(resposta)
-    else:
-        automatic()
+            self.screen.fill((255,255,255))
+            interface.game_map(self)
+            interface.player(self)
+            pygame.display.update()
 
-to_execute()
+            if row == self.ponto_Final.y and column == self.ponto_Final.x:
+                loop = False
+
+        pygame.quit()
+
+    def to_execute(self):
+        estadoInicial = Estado(self.matriz,self.ponto_Inicial,self.ponto_Final,0, [])
+        resposta = Gabarito.busca_Informada(estadoInicial)
+        print("ESCOLHA:")
+        print("DIGITE 1 PARA MANUAL")
+        print("DIGITE 2 PARA AUTOMATICO")
+        escolha = int(input())
+        if(escolha == 1):
+            self.manual()
+        else:
+            self.automatico(resposta)
+lab = labirintoAutomatico(27,13)
+mat = interface(lab)
+mat.to_execute()
 

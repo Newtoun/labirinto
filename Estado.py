@@ -12,7 +12,7 @@ class Estado:
         self.g = passos
         self.h = self.calcula_Heurística()
         self.f = self.g + self.h
-    
+
     def __lt__(self, other):
         return self.f < other.f
 
