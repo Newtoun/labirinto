@@ -1,4 +1,5 @@
 from LabirintoAutomatico import labirintoAutomatico
+from LabirintoManual import LabirintoManual
 from Estado import Estado
 from Gabarito import Gabarito
 import pygame
@@ -149,7 +150,10 @@ class interface:
             self.manual()
         else:
             self.automatico(resposta)
-lab = labirintoAutomatico(27,13)
+lab = LabirintoManual(27,13)
+lab.manuel()
 mat = interface(lab)
+#print(lab.ponto_Inicial)
+#print(lab.ponto_Final)
 mat.to_execute()
 

@@ -1,6 +1,6 @@
-from LabirintoAutomatico import LabirintoAutomatico
 from Estado import Estado
 from Gabarito import Gabarito
+from Ponto import Ponto
 import pygame
 
 
@@ -83,11 +83,11 @@ class LabirintoManual:
                 loop = False
             if keys[pygame.K_i] and escolhas==0:
                 escolhas+=1
-                self.I = (x//25,y//25)
+                self.ponto_Inicial = Ponto(x//25,y//25)
                 self.matriz[y//25][x//25] = 1
             if keys[pygame.K_f] and escolhas==1:
                 escolhas+=1
-                self.ponto_Final = (x//25,y//25)
+                self.ponto_Final = Ponto(x//25,y//25)
                 self.matriz[y//25][x//25] = 1
             
             if escolhas==2:

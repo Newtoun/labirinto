@@ -1,4 +1,4 @@
-from labirinto import labirinto
+from LabirintoAutomatico import labirinto
 from Estado import Estado
 from Gabarito import Gabarito
 import pygame
