@@ -142,14 +142,17 @@ class interface:
     def to_execute(self):
         estadoInicial = Estado(self.matriz,self.ponto_Inicial,self.ponto_Final,0, [])
         resposta = Gabarito.busca_Informada(estadoInicial)
-        print("ESCOLHA:")
-        print("DIGITE 1 PARA MANUAL")
-        print("DIGITE 2 PARA AUTOMATICO")
-        escolha = int(input())
-        if(escolha == 1):
-            self.manual()
+        if (len(resposta) <= 0):
+            print("não tem saida")
         else:
-            self.automatico(resposta)
+            print("ESCOLHA:")
+            print("DIGITE 1 PARA MANUAL")
+            print("DIGITE 2 PARA AUTOMATICO")
+            escolha = int(input())
+            if(escolha == 1):
+                self.manual()
+            else:
+                self.automatico(resposta)
 lab = LabirintoManual(27,13)
 lab.manuel()
 mat = interface(lab)

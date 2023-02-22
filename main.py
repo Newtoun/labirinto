@@ -1,9 +1,9 @@
 from Estado import Estado
 from Gabarito import Gabarito
-from labirinto import labirinto
+from LabirintoAutomatico import labirintoAutomatico
 
 
-matriz = labirinto(11,9)
+matriz = labirintoAutomatico(11,9)
 inicio = matriz.ponto_Inicial
 fim = matriz.ponto_Final
 print("ini: {} fim: {}".format(inicio,fim))
