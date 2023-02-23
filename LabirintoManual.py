@@ -12,7 +12,7 @@ class LabirintoManual:
         self.altura = altura
         self.matriz = self.inicializa_Matriz_Zero()
         self.ponto_Inicial = 0
-        self.ponto_Final = 0
+        self.ponto_Final = None
         pygame.init()
         pygame.display.set_caption("Labirinto")
         self.screen = pygame.display.set_mode((self.largura*25,self.altura*25))
@@ -32,13 +32,13 @@ class LabirintoManual:
 
     def game_map(self):
         #caminho
-        global rect_one
-        caminho = pygame.Surface((100, 100), pygame.SRCALPHA)
-        rect_one = pygame.draw.rect(caminho, (0, 80, 75), (0, 0, 25, 25)) 
+        caminho = pygame.image.load('chaoClaro.png').convert_alpha()
         #parede
-        global rect_two
-        parede = pygame.Surface((80, 80), pygame.SRCALPHA)
-        rect_two = pygame.draw.rect(parede, (0, 255, 255), (0, 0, 25, 25)) 
+        parede = pygame.image.load('parede.png').convert_alpha()
+        #tracante
+        chaoEscuro = pygame.image.load('chaoEscuro.png').convert_alpha()
+        #casa
+        casa = pygame.image.load('casa.png').convert_alpha()
 
         for y in range(self.altura):
             for x in range(self.largura):
@@ -46,7 +46,9 @@ class LabirintoManual:
                     image = parede
                 else:
                     image = caminho
-                self.screen.blit(image, [x*25, y*25]) 
+                self.screen.blit(image, [x*25, y*25])
+                if self.ponto_Final is not None:
+                    self.screen.blit(casa, [self.ponto_Final.x*25, self.ponto_Final.y*25])
         pygame.display.update()
 
 
@@ -58,6 +60,8 @@ class LabirintoManual:
         global x, y
         escolhas = 0
         loop = True
+        #INTERFACE
+        #PYGAMEQUIT
         while loop:
             if escolhas==0:
                 x=0
@@ -89,6 +93,9 @@ class LabirintoManual:
                 escolhas+=1
                 self.ponto_Final = Ponto(x//25,y//25)
                 self.matriz[y//25][x//25] = 1
+            
+            if y<0 or y>(self.altura-1)*25:
+                x,y = pos
             
             if escolhas==2:
                 loop = False

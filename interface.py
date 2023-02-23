@@ -3,6 +3,7 @@ from LabirintoManual import LabirintoManual
 from Estado import Estado
 from Gabarito import Gabarito
 import pygame
+from pygame import mixer
 
 
 speed = 25
@@ -22,42 +23,40 @@ class interface:
     def game_map(self):
 
         #caminho
-        global rect_one
-        surface = pygame.Surface((100, 100), pygame.SRCALPHA)
-        rect_one = pygame.draw.rect(surface, (0, 80, 75), (0, 0, 25, 25)) 
-        #parede
-        global rect_two
-        surface_one = pygame.Surface((80, 80), pygame.SRCALPHA)
-        rect_two = pygame.draw.rect(surface_one, (0, 255, 255), (0, 0, 25, 25))
-        #tracante
-        global rect_three
-        surface_two = pygame.Surface((80, 80), pygame.SRCALPHA)
-        rect_three = pygame.draw.rect(surface_two, (255, 153, 51), (0, 0, 25, 25)) 
+        caminho = pygame.image.load('chaoClaro.png').convert_alpha()
 
-        tileX = 0
-        tileY = 0
+        #parede
+        parede = pygame.image.load('parede.png').convert_alpha()
+        #tracante
+        chaoEscuro = pygame.image.load('chaoEscuro.png').convert_alpha()
+        #casa
+        casa = pygame.image.load('casa.png').convert_alpha()
+
         
         for y, row in enumerate(self.matriz):
-            tileX = 0
             for x, cell in enumerate(row):
                 if cell == 0:
-                    image = surface_one
+                    image = parede
                 elif cell == 1:
-                    image = surface
+                    image = caminho
                 else:
-                    image = surface_two
-                self.screen.blit(image, [x*25, y*25]) 
+                    image = chaoEscuro
+                self.screen.blit(image, [x*25, y*25])
+                self.screen.blit(casa, [self.ponto_Final.x*25, self.ponto_Final.y*25])  
         pygame.display.update() 
 
 
     def player(self):
-        player = pygame.draw.rect(self.screen, (255,0,0), (self.x, self.y, 25, 25))   
+        player = pygame.image.load('raffChao.png').convert_alpha()
+        self.screen.blit(player, [self.x, self.y])  
 
     def automatico(self,resposta): ####mudar
+
         loop = True
         i = 0
         while loop:
             pygame.time.delay(100)
+            
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
