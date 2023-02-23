@@ -31,7 +31,7 @@ class interface:
         chaoEscuro = pygame.image.load('chaoEscuro.png').convert_alpha()
         #casa
         casa = pygame.image.load('casa.png').convert_alpha()
-
+        
         
         for y, row in enumerate(self.matriz):
             for x, cell in enumerate(row):
@@ -97,6 +97,7 @@ class interface:
 
     def manual(self):
         loop = True
+
         while loop:
             pygame.time.delay(100)
 
