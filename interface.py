@@ -153,4 +153,14 @@ class interface:
                 self.manual()
             else:
                 self.automatico(resposta)
+    def to_execute_Manual(self):
+        self.manual()
+        
+    def to_execute_Automatico(self):
+        estadoInicial = Estado(self.matriz,self.ponto_Inicial,self.ponto_Final,0, [])
+        resposta = Gabarito.busca_Informada(estadoInicial)
+        if (len(resposta) <= 0):
+            print("não tem saida")
+        else:
+            self.automatico(resposta)
 
