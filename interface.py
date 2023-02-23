@@ -153,10 +153,4 @@ class interface:
                 self.manual()
             else:
                 self.automatico(resposta)
-lab = LabirintoManual(27,13)
-lab.manuel()
-mat = interface(lab)
-#print(lab.ponto_Inicial)
-#print(lab.ponto_Final)
-mat.to_execute()
 
