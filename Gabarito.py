@@ -23,14 +23,11 @@ class Gabarito:
         fila_De_Prioridade = [] # heapMinima
         estados_Passados = set()
         estado_Atual = estado
-        #estado_Atual.caminho = [(estado_Atual.PontoAtual.x, estado_Atual.PontoAtual.y)]
+      
         fila_De_Prioridade.append(estado_Atual)
         vetor = []
         while len(fila_De_Prioridade) > 0:
             if (estado_Atual.PontoAtual.x == estado_Atual.PontoFinal.x) and  (estado_Atual.PontoAtual.y == estado_Atual.PontoFinal.y):
-                #estados_Passados.add((estado_Atual.PontoAtual.x, estado_Atual.PontoAtual.y))
-                #vet = estado_Atual.caminho
-                #comandos = Gabarito.retorna_Movimento(vet)
                 return estado_Atual.caminho
 
             estados_Passados.add((estado_Atual.PontoAtual.x, estado_Atual.PontoAtual.y))
@@ -44,5 +41,5 @@ class Gabarito:
             if len(fila_De_Prioridade)!=0:# tratar o caso que nao tem solucao
                 estado_Atual = fila_De_Prioridade[0]
         
-        return 0
+        return []
     

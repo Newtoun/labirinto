@@ -5,75 +5,27 @@ from LabirintoManual import LabirintoManual
 from interface import interface
 from Estado import Estado
 from Gabarito import Gabarito
-#create display window
+#cria display
 SCREEN_HEIGHT = 500
 SCREEN_WIDTH = 800
 fundo_Imagem = pygame.image.load("fundo.png")
-
-#INSIDE OF THE GAME LOOP
-
-#REST OF ITEMS ARE BLIT'D TO SCREEN.
-
-def Escolhe_Criacao_Labirinto():#tela de escolha labirinto
-	
-	
-	screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-	pygame.display.set_caption('Labirinto')
-
-	#load button images
-	criar_Automatico = pygame.image.load('criarAutomatico.png').convert_alpha()
-	exit_img = pygame.image.load('criarManualmente.png').convert_alpha()
-
-	#create button instances
-
-	criar_auto = Botao.Button(50, 300, criar_Automatico, 0.6)
-	exit_button = Botao.Button(420, 300, exit_img, 0.6)
-	mat = labirintoAutomatico(37,27)
-	#game loop
-	run = True
-	while run:
-
-		screen.fill((202, 228, 241))
-		#desenha fundo da imagem
-		screen.blit(fundo_Imagem, (0, 0))
-
-		if criar_auto.draw(screen):
-			pygame.quit()
-			resolve = interface(mat)
-			resolve.to_execute_Automatico()
-			print('START')
-
-			pygame.quit()
-		if exit_button.draw(screen):
-			pygame.quit()
-			resolve = interface(mat)
-			resolve.to_execute_Manual()
-
-			print('EXIT')
-
-		#event handler
-		for event in pygame.event.get():
-			#quit game
-			if event.type == pygame.QUIT:
-				run = False
-
-		pygame.display.update()
-	pygame.quit()
-
+tamanho_Matriz = (None,None)
 
 def Tela_inicial():#tela inicial
 	screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 	pygame.display.set_caption('Labirinto')
 
 	#load button images
+	falaAjuda = pygame.image.load('meajuda.png').convert_alpha()
+	falaRaff = pygame.image.load('souoRafa.png').convert_alpha()
 	the_maze = pygame.image.load('themaze.png').convert_alpha()
 	start_img = pygame.image.load('save.png').convert_alpha()
 	rafael_img = pygame.image.load('raff.png').convert_alpha()
 	rafael_img2 = pygame.image.load('raffEsq.png').convert_alpha()
 
 	#create button instances
-	rafael2 = Botao.Button(600,320,rafael_img2,0.8)
-	rafael3 = Botao.Button(125,320,rafael_img,0.8)
+	rafael2 = Botao.Button(600,335,rafael_img2,0.8)
+	rafael3 = Botao.Button(125,335,rafael_img,0.8)
 	the_maze_screen = Botao.Button(100,25,the_maze,1)
 	start_button = Botao.Button(300, 300, start_img, 0.8)
 	
@@ -87,11 +39,13 @@ def Tela_inicial():#tela inicial
 		the_maze_screen.draw(screen)
 		rafael2.draw(screen)
 		rafael3.draw(screen)
+		screen.blit(falaRaff, (25, 275))
+		screen.blit(falaAjuda, (650, 275))
 
 		if start_button.draw(screen):
 			pygame.quit()
-			pygame.time.delay(300)
-			Escolhe_Criacao_Labirinto()
+			pygame.time.delay(100)
+			Tela_Nivel()
 		#event handler
 		for event in pygame.event.get():
 			#quit game
@@ -104,6 +58,7 @@ def Tela_inicial():#tela inicial
 	pygame.quit()
 
 def Tela_Nivel():
+	global tamanho_Matriz
 	screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 	pygame.display.set_caption('Labirinto')
 	nv_Dificuldade = pygame.image.load("nivel_De_Dificuldade.png")
@@ -123,6 +78,7 @@ def Tela_Nivel():
 
 	
 	#game loop
+	interaction = 0
 	run = True
 	while run:
 
@@ -132,13 +88,23 @@ def Tela_Nivel():
 		screen.blit(nv_Dificuldade, (50, 0))
 
 		if nivel1_button.draw(screen):
-			pygame.quit()
-			pygame.time.delay(300)
-			Escolhe_Criacao_Labirinto()
+			tamanho_Matriz = (27,17)
+			interaction+=1
+			
 		if nivel2_button.draw(screen):
-			return
+			tamanho_Matriz = (37,27)
+			interaction+=1		
 		if nivel3_button.draw(screen):
-			return
+			tamanho_Matriz = (53,27)
+			interaction+=1
+			
+
+		if interaction>0:#finaliza tela
+			run = False
+			pygame.quit()
+			pygame.time.delay(100)
+			Tela_criar_labirinto()
+
 		#event handler
 		for event in pygame.event.get():
 			#quit game
@@ -171,9 +137,17 @@ def Tela_criar_labirinto():
 
 		if manual_button.draw(screen):
 			pygame.quit()
-			pygame.time.delay(300)
-			Escolhe_Criacao_Labirinto()
+			pygame.time.delay(100)
+			maze_manual = LabirintoManual(tamanho_Matriz[0],tamanho_Matriz[1])
+			maze_manual.manual()
+			
+			tela_Resolver(maze_manual)
+			return
 		if auto_button.draw(screen):
+			pygame.quit()
+			pygame.time.delay(100)
+			maze_automatico = labirintoAutomatico(tamanho_Matriz[0],tamanho_Matriz[1])
+			tela_Resolver(maze_automatico)
 			return
 		
 		#event handler
@@ -184,7 +158,7 @@ def Tela_criar_labirinto():
 		pygame.display.update()
 	pygame.quit()
 
-def tela_Resolver():
+def tela_Resolver(labirinto):
 	screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 	pygame.display.set_caption('Labirinto')
 	criar_labirinto = pygame.image.load("resolver_lab.png")
@@ -208,9 +182,25 @@ def tela_Resolver():
 
 		if manual_button.draw(screen):
 			pygame.quit()
-			pygame.time.delay(300)
-			Escolhe_Criacao_Labirinto()
+			pygame.time.delay(100)
+			jogo = interface(labirinto)
+			if jogo.to_execute_Manual() == False:
+				tela_Sem_Solucao()
+			else:
+				tela_Ganhou()
+			return
 		if auto_button.draw(screen):
+			pygame.quit()
+			pygame.time.delay(100)
+			jogo = interface(labirinto)
+			if jogo.to_execute_Automatico():
+				pygame.quit()
+				pygame.time.delay(100)
+				tela_Sem_Solucao()
+				return
+			else:
+				tela_Ganhou()
+
 			return
 		
 		#event handler
@@ -248,9 +238,12 @@ def tela_Ganhou():
 
 		if yes_button.draw(screen):
 			pygame.quit()
-			pygame.time.delay(300)
-			Escolhe_Criacao_Labirinto()
+			pygame.time.delay(100)
+			Tela_inicial()
+			return
 		if no_button.draw(screen):
+			quit()
+			run  = False
 			return
 		
 		#event handler
@@ -285,9 +278,12 @@ def tela_Sem_Solucao():
 
 		if yes_button.draw(screen):
 			pygame.quit()
-			pygame.time.delay(300)
-			Escolhe_Criacao_Labirinto()
+			pygame.time.delay(100)
+			Tela_inicial()
+			return
 		if no_button.draw(screen):
+			run =  False
+			quit()
 			return
 		
 		#event handler
@@ -299,5 +295,5 @@ def tela_Sem_Solucao():
 	pygame.quit()
 	
 
-
-tela_Sem_Solucao()
+#Escolhe_Criacao_Labirinto()
+Tela_inicial()

@@ -11,8 +11,8 @@ class LabirintoManual:
         self.largura  = largura
         self.altura = altura
         self.matriz = self.inicializa_Matriz_Zero()
-        self.ponto_Inicial = 0
-        self.ponto_Final = None
+        self.ponto_Inicial = Ponto(None,None)
+        self.ponto_Final = Ponto(None,None)
         pygame.init()
         pygame.display.set_caption("Labirinto")
         self.screen = pygame.display.set_mode((self.largura*25,self.altura*25))
@@ -30,7 +30,7 @@ class LabirintoManual:
                 print(self.matriz[i][j],end=" ")
             print()
 
-    def game_map(self):
+    def game_map(self, texto1, texto2):
         #caminho
         caminho = pygame.image.load('chaoClaro.png').convert_alpha()
         #parede
@@ -39,11 +39,11 @@ class LabirintoManual:
         chaoEscuro = pygame.image.load('chaoEscuro.png').convert_alpha()
         #casa
         casa = pygame.image.load('casa.png').convert_alpha()
+
         pygame.font.init()
-        font_padrao = pygame.font.get_default_font()
-        fonte_escolheInicio = pygame.font.SysFont(font_padrao, 45)
-        aviso = fonte_escolheInicio.render('ESCOLHA O PONTO INICIAL NA COLUNA 1', 1, (255, 255, 255))
-        self.screen.blit(aviso, (0, 0))
+        font_padrao = pygame.font.SysFont('Eras Demi ITC', 25)
+        aviso1 = font_padrao.render(texto1, 1, (0, 0, 0))
+        aviso2 = font_padrao.render(texto2, 1, (0, 0, 0))
         for y in range(self.altura):
             for x in range(self.largura):
                 if self.matriz[y][x] == 0:
@@ -51,9 +51,10 @@ class LabirintoManual:
                 else:
                     image = caminho
                 self.screen.blit(image, [x*25, y*25])
-                if self.ponto_Final is not None:
+                if self.ponto_Final.x is not None:
                     self.screen.blit(casa, [self.ponto_Final.x*25, self.ponto_Final.y*25])
-                self.screen.blit(aviso, (0, 0))
+                self.screen.blit(aviso1, (self.largura*12.5-180, self.altura*12.5))
+                self.screen.blit(aviso2, (self.largura*12.5-180, self.altura*12.5+25))
                 
         pygame.display.update()
 
@@ -64,20 +65,18 @@ class LabirintoManual:
 
     def escolhe_inicio_fim(self): 
         global x, y
-        pygame.font.init()
-        font_padrao = pygame.font.get_default_font()
-        fonte_escolheInicio = pygame.font.SysFont(font_padrao, 45)
-        font_escolheFim = pygame.font.SysFont(font_padrao, 35)
         escolhas = 0
         loop = True
         #INTERFACE
         #PYGAMEQUIT
         while loop:
             if escolhas==0:
+                texto1 = '1 - TECLE SPACE PARA ESCOLHER'
+                texto2 = ' O PONTO INICIAL NA PRIMEIRA COLUNA'
                 x=0
-                #aviso = fonte_escolheInicio.render('ESCOLHA O PONTO INICIAL NA COLUNA 1', 1, (255, 255, 255))
-                #self.screen.blit(aviso, (0, 0))
             elif escolhas==1:
+                texto1 = '2 - TECLE SPACE PARA ESCOLHER'
+                texto2 = 'O PONTO FINAL NA ULTIMA COLUNA'
                 x=(self.largura-1)*25
             pygame.time.delay(100)
             
@@ -97,14 +96,15 @@ class LabirintoManual:
                 y += speed                
             if keys[pygame.K_s]:
                 loop = False
-            if keys[pygame.K_i] and escolhas==0:
-                escolhas+=1
-                self.ponto_Inicial = Ponto(x//25,y//25)
-                self.matriz[y//25][x//25] = 1
-            if keys[pygame.K_f] and escolhas==1:
+            if keys[pygame.K_SPACE] and escolhas==1:
                 escolhas+=1
                 self.ponto_Final = Ponto(x//25,y//25)
                 self.matriz[y//25][x//25] = 1
+            if keys[pygame.K_SPACE] and escolhas==0:
+                escolhas+=1
+                self.ponto_Inicial = Ponto(x//25,y//25)
+                self.matriz[y//25][x//25] = 1
+            
             
             if y<0 or y>(self.altura-1)*25:
                 x,y = pos
@@ -114,18 +114,19 @@ class LabirintoManual:
             
             ##self.screen.blit(aviso, (50, 50))
             self.screen.fill((255,255,255))
-            LabirintoManual.game_map(self)
+            LabirintoManual.game_map(self, texto1, texto2)
             LabirintoManual.player(self)
             pygame.display.update()
-            aviso = fonte_escolheInicio.render('ESCOLHA O PONTO INICIAL NA COLUNA 1', 1, (255, 255, 255))
-            self.screen.blit(aviso, (0, 0))
 
 
 
-    def manuel(self):
+    def manual(self):
         global x, y
         loop = True 
         LabirintoManual.escolhe_inicio_fim(self)
+        texto1 = '3 - TECLE C PARA CRIAR CAMINHO'
+        texto2 = 'E UTILIZE SETAS PARA MOVER'
+        conta_Tempo_Sumir = 0
         x = y  = 25
         
         while loop:
@@ -160,14 +161,18 @@ class LabirintoManual:
             if (coluna==0 or coluna >= self.largura-1) or (linha==0 or linha >=self.altura-1):
                 x, y = pos
 
+            if(conta_Tempo_Sumir == 50):
+                texto1 = ' '
+                texto2 = ' '
+
             self.screen.fill((255,255,255))
-            LabirintoManual.game_map(self)
+            LabirintoManual.game_map(self, texto1, texto2)
             LabirintoManual.player(self)
             pygame.display.update()
+            conta_Tempo_Sumir += 1
             
         pygame.quit()
 
-mat = LabirintoManual(47,37)
-mat.manuel()
+
 
 

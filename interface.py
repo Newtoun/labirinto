@@ -97,6 +97,7 @@ class interface:
 
     def manual(self):
         loop = True
+        Retorno = False
 
         while loop:
             pygame.time.delay(100)
@@ -136,10 +137,12 @@ class interface:
 
             if row == self.ponto_Final.y and column == self.ponto_Final.x:
                 loop = False
+                Retorno = True
 
         pygame.quit()
+        return Retorno
 
-    def to_execute(self):
+    def to_execute(self):#FUNCAO PARA APAGAR
         estadoInicial = Estado(self.matriz,self.ponto_Inicial,self.ponto_Final,0, [])
         resposta = Gabarito.busca_Informada(estadoInicial)
         if (len(resposta) <= 0):
@@ -154,13 +157,22 @@ class interface:
             else:
                 self.automatico(resposta)
     def to_execute_Manual(self):
-        self.manual()
+        return self.manual()
         
     def to_execute_Automatico(self):
         estadoInicial = Estado(self.matriz,self.ponto_Inicial,self.ponto_Final,0, [])
         resposta = Gabarito.busca_Informada(estadoInicial)
-        if (len(resposta) <= 0):
-            print("não tem saida")
+        print(resposta)
+        if (resposta == []):
+           pygame.quit()
+           return True
         else:
             self.automatico(resposta)
+            return False
 
+#mat =LabirintoManual(27,17)
+#mat.manual()
+
+#print("X: {} - Y: {}".format(mat.po))
+#lab = interface(mat)
+#lab.to_execute_Automatico()
